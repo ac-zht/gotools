@@ -30,7 +30,7 @@ func NewSliceQueue[T any](capacity int) *SliceQueue[T] {
 	return sq
 }
 
-func (s *SliceQueue[T]) In(ctx context.Context, val T) (err error) {
+func (s *SliceQueue[T]) Enqueue(ctx context.Context, val T) (err error) {
 	err = s.enqueue.Acquire(ctx, 1)
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (s *SliceQueue[T]) In(ctx context.Context, val T) (err error) {
 	return nil
 }
 
-func (s *SliceQueue[T]) Out(ctx context.Context) (val T, err error) {
+func (s *SliceQueue[T]) Dequeue(ctx context.Context) (val T, err error) {
 	err = s.dequeue.Acquire(ctx, 1)
 	if err != nil {
 		return s.zero, err

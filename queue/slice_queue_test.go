@@ -29,7 +29,7 @@ func TestSemaphore(t *testing.T) {
 	wg.Wait()
 }
 
-func TestSliceQueue_In(t *testing.T) {
+func TestSliceQueue_Enqueue(t *testing.T) {
 	testCases := []struct {
 		name string
 		ctx  context.Context
@@ -48,8 +48,8 @@ func TestSliceQueue_In(t *testing.T) {
 			in: 10,
 			q: func() *SliceQueue[int] {
 				q := NewSliceQueue[int](2)
-				_ = q.In(context.Background(), 11)
-				_ = q.In(context.Background(), 12)
+				_ = q.Enqueue(context.Background(), 11)
+				_ = q.Enqueue(context.Background(), 12)
 				return q
 			}(),
 			wantErr:  context.DeadlineExceeded,
@@ -58,14 +58,14 @@ func TestSliceQueue_In(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			err := tc.q.In(tc.ctx, tc.in)
+			err := tc.q.Enqueue(tc.ctx, tc.in)
 			assert.Equal(t, tc.wantData, tc.q.data)
 			assert.Equal(t, tc.wantErr, err)
 		})
 	}
 }
 
-func TestSliceQueue_InOut(t *testing.T) {
+func TestSliceQueue_EnqueueDequeue(t *testing.T) {
 	sq := NewSliceQueue[int](5)
 	closed := false
 	for i := 0; i < 3; i++ {
@@ -76,7 +76,7 @@ func TestSliceQueue_InOut(t *testing.T) {
 				}
 				in := rand.Int()
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-				_ = sq.In(ctx, in)
+				_ = sq.Enqueue(ctx, in)
 				cancel()
 			}
 		}()
@@ -89,7 +89,7 @@ func TestSliceQueue_InOut(t *testing.T) {
 					return
 				}
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-				_, _ = sq.Out(ctx)
+				_, _ = sq.Dequeue(ctx)
 				cancel()
 			}
 		}()
