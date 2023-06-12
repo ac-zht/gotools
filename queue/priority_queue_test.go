@@ -1,7 +1,6 @@
 package queue
 
 import (
-	"context"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -15,18 +14,18 @@ func TestPriorityQueue_EnqueueDequeue(t *testing.T) {
 		}
 		return -1
 	})
-	_ = minQueue.Enqueue(context.Background(), 4)
-	_ = minQueue.Enqueue(context.Background(), 3)
-	_ = minQueue.Enqueue(context.Background(), 2)
-	_ = minQueue.Enqueue(context.Background(), 1)
+	_ = minQueue.Enqueue(4)
+	_ = minQueue.Enqueue(3)
+	_ = minQueue.Enqueue(2)
+	_ = minQueue.Enqueue(1)
 
-	val, err := minQueue.Dequeue(context.Background())
+	val, err := minQueue.Dequeue()
 	assert.Equal(t, 1, val)
-	val, err = minQueue.Dequeue(context.Background())
+	val, err = minQueue.Dequeue()
 	assert.Equal(t, 2, val)
-	val, err = minQueue.Dequeue(context.Background())
+	val, err = minQueue.Dequeue()
 	assert.Equal(t, 3, val)
-	val, err = minQueue.Dequeue(context.Background())
+	val, err = minQueue.Dequeue()
 	assert.Equal(t, 4, val)
 	assert.NoError(t, err)
 
@@ -38,17 +37,17 @@ func TestPriorityQueue_EnqueueDequeue(t *testing.T) {
 		}
 		return -1
 	})
-	_ = maxQueue.Enqueue(context.Background(), 1)
-	_ = maxQueue.Enqueue(context.Background(), 2)
-	_ = maxQueue.Enqueue(context.Background(), 3)
-	_ = maxQueue.Enqueue(context.Background(), 4)
-	val, err = maxQueue.Dequeue(context.Background())
+	_ = maxQueue.Enqueue(1)
+	_ = maxQueue.Enqueue(2)
+	_ = maxQueue.Enqueue(3)
+	_ = maxQueue.Enqueue(4)
+	val, err = maxQueue.Dequeue()
 	assert.Equal(t, 4, val)
-	val, err = maxQueue.Dequeue(context.Background())
+	val, err = maxQueue.Dequeue()
 	assert.Equal(t, 3, val)
-	val, err = maxQueue.Dequeue(context.Background())
+	val, err = maxQueue.Dequeue()
 	assert.Equal(t, 2, val)
-	val, err = maxQueue.Dequeue(context.Background())
+	val, err = maxQueue.Dequeue()
 	assert.Equal(t, 1, val)
 	assert.NoError(t, err)
 }

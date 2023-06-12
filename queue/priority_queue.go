@@ -1,9 +1,7 @@
 package queue
 
 import (
-	"context"
 	"errors"
-	"sync"
 )
 
 var (
@@ -14,7 +12,6 @@ var (
 type Comparer[T any] func(x, y T) int
 
 type priorityQueue[T any] struct {
-	mux *sync.RWMutex
 	//队列容量，小于0表示无界队列，大于0表示有界队列
 	capacity int
 	compare  Comparer[T]
@@ -23,12 +20,7 @@ type priorityQueue[T any] struct {
 	data []T
 }
 
-func (p *priorityQueue[T]) Enqueue(ctx context.Context, val T) error {
-	p.mux.Lock()
-	defer p.mux.Unlock()
-	if ctx.Err() != nil {
-		return ctx.Err()
-	}
+func (p *priorityQueue[T]) Enqueue(val T) error {
 	if p.isFull() {
 		return ErrOutOfCapacity
 	}
@@ -43,12 +35,7 @@ func (p *priorityQueue[T]) Enqueue(ctx context.Context, val T) error {
 	return nil
 }
 
-func (p *priorityQueue[T]) Dequeue(ctx context.Context) (val T, err error) {
-	p.mux.Lock()
-	defer p.mux.Unlock()
-	if ctx.Err() != nil {
-		return p.zero, ctx.Err()
-	}
+func (p *priorityQueue[T]) Dequeue() (val T, err error) {
 	if p.isEmpty() {
 		return p.zero, ErrEmptyQueue
 	}
@@ -73,10 +60,8 @@ func (p *priorityQueue[T]) Dequeue(ctx context.Context) (val T, err error) {
 	return val, nil
 }
 
-func (p *priorityQueue[T]) Peek() (val T, err error) {
-	p.mux.RLock()
-	defer p.mux.RUnlock()
-	if p.IsEmpty() {
+func (p *priorityQueue[T]) peek() (val T, err error) {
+	if p.isEmpty() {
 		return p.zero, ErrEmptyQueue
 	}
 	return p.data[1], nil
@@ -90,18 +75,6 @@ func (p *priorityQueue[T]) isEmpty() bool {
 	return len(p.data) < 2
 }
 
-func (p *priorityQueue[T]) IsFull() bool {
-	p.mux.RLock()
-	defer p.mux.RUnlock()
-	return p.isFull()
-}
-
-func (p *priorityQueue[T]) IsEmpty() bool {
-	p.mux.RLock()
-	defer p.mux.RUnlock()
-	return p.isEmpty()
-}
-
 func NewPriorityQueue[T any](capacity int, compare Comparer[T]) *priorityQueue[T] {
 	sliceCap := capacity + 1
 	if capacity <= 0 {
@@ -109,7 +82,6 @@ func NewPriorityQueue[T any](capacity int, compare Comparer[T]) *priorityQueue[T
 		sliceCap = 64
 	}
 	return &priorityQueue[T]{
-		mux:      &sync.RWMutex{},
 		capacity: capacity,
 		compare:  compare,
 		data:     make([]T, 1, sliceCap),
