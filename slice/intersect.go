@@ -1,6 +1,6 @@
 package slice
 
-func Intersection[T comparable](src, dst []T) []T {
+func Intersect[T comparable](src, dst []T) []T {
 	m := Map[T](src)
 	l := len(src)
 	if len(dst) < l {

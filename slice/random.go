@@ -1,9 +1,28 @@
 package slice
 
-import "gotools/random"
+import (
+	"gotools"
+	"gotools/random"
+)
 
-func RandomIndexes[T any]() {
-
+func RandomIndexes[T any](src []T, n int) ([]int, error) {
+	if len(src) <= 0 {
+		return nil, gotools.ErrSliceIsEmpty
+	}
+	if n > len(src) {
+		return nil, gotools.ErrSliceLengthNotEnough
+	}
+	ret := make([]int, 0, n)
+	cnt := 0
+	for cnt <= n {
+		m := random.RandInt(0, len(src)-1)
+		if Contain[int](ret, m) {
+			continue
+		}
+		ret = append(ret, m)
+		cnt++
+	}
+	return ret, nil
 }
 
 // WeightRandomIndex 按整型权重随机返回切片节点

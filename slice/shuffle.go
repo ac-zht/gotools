@@ -1,6 +1,7 @@
 package slice
 
 import (
+	"gotools/random"
 	"math/rand"
 	"reflect"
 	"time"
@@ -18,7 +19,7 @@ func Shuffle[T any](src []T) {
 	srcSwap := reflect.Swapper(src)
 	var j int
 	for i := 0; i < len(src); i++ {
-		j = rand.Intn(len(src))
+		j = random.RandInt(0, len(src)-1)
 		srcSwap(i, j)
 	}
 }

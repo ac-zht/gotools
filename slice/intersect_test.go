@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestIntersection(t *testing.T) {
+func TestIntersect(t *testing.T) {
 	testCase := []struct {
 		name string
 		src  []int
@@ -34,7 +34,7 @@ func TestIntersection(t *testing.T) {
 
 	for _, tc := range testCase {
 		t.Run(tc.name, func(t *testing.T) {
-			intersect := Intersection[int](tc.src, tc.dst)
+			intersect := Intersect[int](tc.src, tc.dst)
 			assert.Equal(t, tc.want, intersect)
 		})
 	}
