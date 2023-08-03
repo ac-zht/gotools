@@ -7,3 +7,10 @@ func Keys[T comparable, A any](mp map[T]A) []T {
 	}
 	return keys
 }
+
+func KeyExist[T comparable, A any](mp map[T]A, key T) bool {
+	if _, ok := mp[key]; ok {
+		return true
+	}
+	return false
+}
