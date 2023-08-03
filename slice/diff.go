@@ -1,5 +1,6 @@
 package slice
 
+// Diff 切片src与dst的差集
 func Diff[T comparable](src, dst []T) []T {
 	srcMap := Map[T](src)
 	for _, v := range dst {
@@ -12,6 +13,7 @@ func Diff[T comparable](src, dst []T) []T {
 	return diff
 }
 
+// SymmetricDiff 切片src与dst的对称差集
 func SymmetricDiff[T comparable](src, dst []T) []T {
 	srcMap := Map[T](src)
 	dstMap := Map[T](dst)

@@ -1,5 +1,6 @@
 package slice
 
+// Unique 切片去重
 func Unique[T comparable](src []T) []T {
 	srcMap := Map[T](src)
 	uniq := make([]T, 0, len(srcMap))

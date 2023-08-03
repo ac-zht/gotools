@@ -1,5 +1,6 @@
 package slice
 
+// Delete 根据下标删除切片中元素
 func Delete[T any](index int, s []T) []T {
 	if index < 0 || index >= len(s) {
 		return s

@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Shuffle 打乱切片
 func Shuffle[T any](src []T) {
 	typ := reflect.TypeOf(src)
 	if typ.Kind() != reflect.Slice {

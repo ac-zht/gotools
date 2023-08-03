@@ -5,6 +5,7 @@ import (
 	"gotools/random"
 )
 
+// RandomIndexes 随机得到切片中指定数量的下标集
 func RandomIndexes[T any](src []T, n int) ([]int, error) {
 	if len(src) <= 0 {
 		return nil, gotools.ErrSliceIsEmpty
@@ -25,7 +26,7 @@ func RandomIndexes[T any](src []T, n int) ([]int, error) {
 	return ret, nil
 }
 
-// WeightRandomIndex 按整型权重随机返回切片节点
+// WeightRandomIndex 按整型权重随机返回切片某个下标
 func WeightRandomIndex(src []int) int {
 	sum := Sum[int](src)
 	n := random.RandInt(1, sum)
