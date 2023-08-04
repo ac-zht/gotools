@@ -63,3 +63,29 @@ func TestKeyExist(t *testing.T) {
 		})
 	}
 }
+
+func TestKeysWithValue(t *testing.T) {
+	testCase := []struct {
+		name string
+		mp   map[string]int
+		val  int
+		want []string
+	}{
+		{
+			name: "keys with value",
+			mp: map[string]int{
+				"a": 1,
+				"b": 2,
+				"c": 1,
+			},
+			val:  1,
+			want: []string{"a", "c"},
+		},
+	}
+	for _, tc := range testCase {
+		t.Run(tc.name, func(t *testing.T) {
+			keys := KeysWithValue[string, int](tc.mp, tc.val)
+			assert.ElementsMatch(t, tc.want, keys)
+		})
+	}
+}
