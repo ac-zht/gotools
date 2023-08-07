@@ -1,16 +1,19 @@
 package slice
 
+import "gotools"
+
 // Delete 根据下标删除切片中元素
-func Delete[T any](index int, s []T) []T {
+func Delete[T any](index int, s []T) (res []T, t T, err error) {
 	if index < 0 || index >= len(s) {
-		return s
+		return s, t, gotools.ErrIndexOutOfRange
 	}
+	t = s[index]
 	return FilterDelete(s, func(key int, value T) bool {
 		if key == index {
 			return true
 		}
 		return false
-	})
+	}), t, nil
 }
 
 func FilterDelete[T any](s []T, filter func(key int, value T) bool) []T {
