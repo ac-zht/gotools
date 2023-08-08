@@ -17,16 +17,22 @@ func TestArrayList_Get(t *testing.T) {
 		wantErr error
 	}{
 		{
-			name:    "index out of range",
-			list:    NewArrayListOf([]int{1, 2, 3}),
-			index:   3,
-			wantErr: gotools.ErrIndexOutOfRange,
-		},
-		{
-			name:  "get",
+			name:  "index 1",
 			list:  NewArrayListOf([]int{1, 2, 3}),
 			index: 1,
 			want:  2,
+		},
+		{
+			name:    "index 3",
+			list:    NewArrayListOf([]int{1, 2, 3}),
+			index:   3,
+			wantErr: gotools.NewErrIndexOutOfRange(3, 3),
+		},
+		{
+			name:    "index -1",
+			list:    NewArrayListOf([]int{1, 2, 3}),
+			index:   -1,
+			wantErr: gotools.NewErrIndexOutOfRange(3, -1),
 		},
 	}
 
@@ -44,49 +50,134 @@ func TestArrayList_Get(t *testing.T) {
 
 func TestArrayList_Append(t *testing.T) {
 	testCase := []struct {
-		name string
-		list *ArrayList[int]
-		a    int
-		b    int
-		want []int
+		name   string
+		list   *ArrayList[int]
+		newVal []int
+		want   []int
 	}{
+		//append non-empty values
 		{
-			name: "append",
-			list: NewArrayListOf([]int{1}),
-			a:    2,
-			b:    3,
-			want: []int{1, 2, 3},
+			name:   "append non-empty values to empty list",
+			list:   NewArrayListOf[int]([]int{}),
+			newVal: []int{2, 3},
+			want:   []int{2, 3},
+		},
+		{
+			name:   "append non-empty values to nil list",
+			list:   NewArrayListOf[int](nil),
+			newVal: []int{2, 3},
+			want:   []int{2, 3},
+		},
+		{
+			name:   "append non-empty values to non-empty list",
+			list:   NewArrayListOf[int]([]int{1}),
+			newVal: []int{2, 3},
+			want:   []int{1, 2, 3},
+		},
+		//append empty values
+		{
+			name:   "append empty values to non-empty list",
+			list:   NewArrayListOf[int]([]int{1}),
+			newVal: []int{},
+			want:   []int{1},
+		},
+		{
+			name:   "append empty values to empty list",
+			list:   NewArrayListOf[int]([]int{}),
+			newVal: []int{},
+			want:   []int{},
+		},
+		{
+			name:   "append empty values to nil list",
+			list:   NewArrayListOf[int](nil),
+			newVal: []int{},
+			want:   []int{},
+		},
+		//append nil values
+		{
+			name:   "append nil values to non-empty list",
+			list:   NewArrayListOf[int]([]int{1}),
+			newVal: nil,
+			want:   []int{1},
+		},
+		{
+			name:   "append nil values to empty list",
+			list:   NewArrayListOf[int]([]int{}),
+			newVal: nil,
+			want:   []int{},
+		},
+		{
+			name:   "append nil values to nil list",
+			list:   NewArrayListOf[int](nil),
+			newVal: nil,
+			want:   []int{},
 		},
 	}
 
 	for _, tc := range testCase {
 		t.Run(tc.name, func(t *testing.T) {
-			_ = tc.list.Append(tc.a, tc.b)
-			assert.Equal(t, tc.want, tc.list.values)
+			err := tc.list.Append(tc.newVal...)
+			if err != nil {
+				return
+			}
+			assert.Equal(t, tc.want, tc.list.AsSlice())
 		})
 	}
 }
 
 func TestArrayList_Add(t *testing.T) {
 	testCase := []struct {
-		name  string
-		list  *ArrayList[string]
-		index int
-		val   string
-		want  []string
+		name    string
+		list    *ArrayList[string]
+		index   int
+		val     string
+		want    []string
+		wantErr error
 	}{
 		{
-			name:  "add",
-			list:  NewArrayListOf([]string{"a", "b", "c"}),
+			name:    "index -1",
+			list:    NewArrayListOf[string]([]string{"a", "b"}),
+			index:   -1,
+			val:     "c",
+			wantErr: gotools.NewErrIndexOutOfRange(2, -1),
+		},
+		{
+			name:  "index 0",
+			list:  NewArrayListOf[string]([]string{"a", "b"}),
+			index: 0,
+			val:   "c",
+			want:  []string{"c", "a", "b"},
+		},
+		{
+			name:  "index 1",
+			list:  NewArrayListOf[string]([]string{"a", "b"}),
 			index: 1,
-			val:   "f",
-			want:  []string{"a", "f", "b", "c"},
+			val:   "c",
+			want:  []string{"a", "c", "b"},
+		},
+		{
+			name:  "index 2",
+			list:  NewArrayListOf[string]([]string{"a", "b"}),
+			index: 2,
+			val:   "c",
+			want:  []string{"a", "b", "c"},
+		},
+		{
+			name:    "index 3",
+			list:    NewArrayListOf[string]([]string{"a", "b"}),
+			index:   3,
+			val:     "c",
+			wantErr: gotools.NewErrIndexOutOfRange(2, 3),
 		},
 	}
 
 	for _, tc := range testCase {
 		t.Run(tc.name, func(t *testing.T) {
-			_ = tc.list.Add(tc.index, tc.val)
+			err := tc.list.Add(tc.index, tc.val)
+			assert.Equal(t, tc.wantErr, err)
+			if err != nil {
+				return
+			}
 			assert.Equal(t, tc.want, tc.list.values)
 		})
 	}
@@ -95,52 +186,153 @@ func TestArrayList_Add(t *testing.T) {
 func TestArrayList_Delete(t *testing.T) {
 	testCase := []struct {
 		name    string
-		list    func() *ArrayList[string]
+		list    *ArrayList[string]
 		index   int
 		want    []string
 		wantVal string
 		wantErr error
 	}{
 		{
-			name: "index out of range",
-			list: func() *ArrayList[string] {
-				return NewArrayListOf([]string{"a", "b", "c"})
-			},
+			name:    "index out of range",
+			list:    NewArrayListOf[string]([]string{"a", "b", "c"}),
 			index:   3,
-			wantErr: gotools.ErrIndexOutOfRange,
+			wantErr: gotools.NewErrIndexOutOfRange(3, 3),
 		},
 		{
-			name: "no shrink",
-			list: func() *ArrayList[string] {
-				return NewArrayListOf([]string{"a", "b", "c"})
-			},
+			name:    "deleted",
+			list:    NewArrayListOf[string]([]string{"a", "b", "c"}),
 			index:   1,
 			want:    []string{"a", "c"},
 			wantVal: "b",
 		},
-		{
-			name: "shrink",
-			list: func() *ArrayList[string] {
-				list := NewArrayListOf(make([]string, 251, 1000))
-				list.values[1] = "test"
-				return list
-			},
-			index:   1,
-			want:    make([]string, 250, 500),
-			wantVal: "test",
-		},
+		//{
+		//	name: "shrink",
+		//	list: func() *ArrayList[string] {
+		//		list := NewArrayListOf(make([]string, 251, 1000))
+		//		list.values[1] = "test"
+		//		return list
+		//	},
+		//	index:   1,
+		//	want:    make([]string, 250, 500),
+		//	wantVal: "test",
+		//},
 	}
 
 	for _, tc := range testCase {
 		t.Run(tc.name, func(t *testing.T) {
-			list := tc.list()
-			val, err := list.Delete(tc.index)
+			val, err := tc.list.Delete(tc.index)
 			assert.Equal(t, tc.wantErr, err)
 			if err != nil {
 				return
 			}
-			assert.Equal(t, tc.want, list.values)
+			assert.Equal(t, tc.want, tc.list.AsSlice())
 			assert.Equal(t, tc.wantVal, val)
+		})
+	}
+}
+
+func TestArrayList_Delete_Shrink(t *testing.T) {
+	testCase := []struct {
+		name    string
+		cap     int
+		loop    int
+		wantCap int
+	}{
+		// ----- 逻辑测试 -----
+		//case 1: cap小于等于64，容量不变
+		{
+			name:    "case 1",
+			cap:     64,
+			loop:    1,
+			wantCap: 64,
+		},
+		//case 2: cap大于64且小于等于2048，长度占容量1/4以下，缩容1/2
+		{
+			name:    "case 2",
+			cap:     100,
+			loop:    20,
+			wantCap: 50,
+		},
+		//case 3: cap大于64且小于等于2048，长度占容量1/4以上，容量不变
+		{
+			name:    "case 3",
+			cap:     100,
+			loop:    30,
+			wantCap: 100,
+		},
+		//case 4: cap大于2048，长度占容量1/2以下，缩容5/8，向下取整
+		{
+			name:    "case 4",
+			cap:     2050,
+			loop:    100,
+			wantCap: 1281,
+		},
+		//case 5: cap大于2048，长度占容量1/2以上，容量不变
+		{
+			name:    "case 5",
+			cap:     2050,
+			loop:    1030,
+			wantCap: 2050,
+		},
+		// ----- 边界测试 -----
+		//case 6-1: cap65 loop 2
+		{
+			name:    "case 6-1",
+			cap:     65,
+			loop:    2,
+			wantCap: 32,
+		},
+		//case 6-2: cap 65,loop 18 --delete--> len=17
+		{
+			name:    "case 6-2",
+			cap:     65,
+			loop:    18,
+			wantCap: 65,
+		},
+		//case 6-3: cap 65,loop 17 --delete--> len=16
+		{
+			name:    "case 6-3",
+			cap:     65,
+			loop:    17,
+			wantCap: 32,
+		},
+		//case 7-1: cap:2047 loop 512 --delete--> len=511
+		{
+			name:    "case 7-2",
+			cap:     2047,
+			loop:    512,
+			wantCap: 1023,
+		},
+		//case 7-2: cap:2047 loop 513 --delete--> len=512
+		{
+			name:    "case 7-2",
+			cap:     2047,
+			loop:    513,
+			wantCap: 2047,
+		},
+		//case 8-1: cap:2049 loop 1026 --delete--> len=1025
+		{
+			name:    "case 8-1",
+			cap:     2049,
+			loop:    1026,
+			wantCap: 2049,
+		},
+		//case 8-2: cap:2049 loop 1025 delete --delete--> len=1024
+		{
+			name:    "case 8-2",
+			cap:     2049,
+			loop:    1025,
+			wantCap: 1280,
+		},
+	}
+	for _, tc := range testCase {
+		t.Run(tc.name, func(t *testing.T) {
+			list := NewArrayList[int](tc.cap)
+			for i := 0; i < tc.loop; i++ {
+				_ = list.Append(i)
+			}
+			_, _ = list.Delete(0)
+			assert.Equal(t, tc.wantCap, list.Cap())
 		})
 	}
 }

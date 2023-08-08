@@ -31,7 +31,7 @@ func (a *ArrayList[T]) Cap() int {
 
 func (a *ArrayList[T]) Get(index int) (t T, err error) {
 	if index < 0 || index >= len(a.values) {
-		return t, gotools.ErrIndexOutOfRange
+		return t, gotools.NewErrIndexOutOfRange(len(a.values), index)
 	}
 	return a.values[index], nil
 }
@@ -43,7 +43,7 @@ func (a *ArrayList[T]) Append(t ...T) error {
 
 func (a *ArrayList[T]) Add(index int, t T) error {
 	if index < 0 || index > len(a.values) {
-		return gotools.ErrIndexOutOfRange
+		return gotools.NewErrIndexOutOfRange(len(a.values), index)
 	}
 	a.values = append(a.values, t)
 	copy(a.values[index+1:], a.values[index:])
