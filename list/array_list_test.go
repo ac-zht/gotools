@@ -8,6 +8,66 @@ import (
 	"testing"
 )
 
+func TestArrayList_Cap(t *testing.T) {
+	testCase := []struct {
+		name  string
+		list  *ArrayList[int]
+		index int
+		want  int
+	}{
+		{
+			name: "normal",
+			list: &ArrayList[int]{
+				values: make([]int, 0, 3),
+			},
+			want: 3,
+		},
+		{
+			name: "nil",
+			list: &ArrayList[int]{
+				values: nil,
+			},
+			want: 0,
+		},
+	}
+	for _, tc := range testCase {
+		t.Run(tc.name, func(t *testing.T) {
+			c := tc.list.Cap()
+			assert.Equal(t, tc.want, c)
+		})
+	}
+}
+
+func TestArrayList_Len(t *testing.T) {
+	testCase := []struct {
+		name  string
+		list  *ArrayList[int]
+		index int
+		want  int
+	}{
+		{
+			name: "normal",
+			list: &ArrayList[int]{
+				values: make([]int, 3),
+			},
+			want: 3,
+		},
+		{
+			name: "nil",
+			list: &ArrayList[int]{
+				values: nil,
+			},
+			want: 0,
+		},
+	}
+	for _, tc := range testCase {
+		t.Run(tc.name, func(t *testing.T) {
+			l := tc.list.Len()
+			assert.Equal(t, tc.want, l)
+		})
+	}
+}
+
 func TestArrayList_Get(t *testing.T) {
 	testCase := []struct {
 		name    string
@@ -205,17 +265,6 @@ func TestArrayList_Delete(t *testing.T) {
 			want:    []string{"a", "c"},
 			wantVal: "b",
 		},
-		//{
-		//	name: "shrink",
-		//	list: func() *ArrayList[string] {
-		//		list := NewArrayListOf(make([]string, 251, 1000))
-		//		list.values[1] = "test"
-		//		return list
-		//	},
-		//	index:   1,
-		//	want:    make([]string, 250, 500),
-		//	wantVal: "test",
-		//},
 	}
 
 	for _, tc := range testCase {
@@ -347,17 +396,23 @@ func TestArrayList_Set(t *testing.T) {
 		wantErr error
 	}{
 		{
-			name:    "index out of range",
+			name:    "index -1",
 			list:    NewArrayListOf([]string{"a", "b", "c"}),
-			index:   3,
-			wantErr: gotools.ErrIndexOutOfRange,
+			index:   -1,
+			wantErr: gotools.NewErrIndexOutOfRange(3, -1),
 		},
 		{
-			name:  "set",
+			name:  "index 1",
 			list:  NewArrayListOf([]string{"a", "b", "c"}),
 			index: 1,
 			val:   "f",
 			want:  []string{"a", "f", "c"},
+		},
+		{
+			name:    "index 3",
+			list:    NewArrayListOf([]string{"a", "b", "c"}),
+			index:   3,
+			wantErr: gotools.NewErrIndexOutOfRange(3, 3),
 		},
 	}
 
@@ -443,7 +498,10 @@ func TestArrayList_AsSlice(t *testing.T) {
 	for _, tc := range testCase {
 		t.Run(tc.name, func(t *testing.T) {
 			res := tc.list.AsSlice()
+			orgAddr := fmt.Sprintf("%p", tc.list.values)
+			sliceAddr := fmt.Sprintf("%p", res)
 			assert.Equal(t, tc.want, res)
+			assert.NotEqual(t, orgAddr, sliceAddr)
 		})
 	}
 }

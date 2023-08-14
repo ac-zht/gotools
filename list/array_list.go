@@ -66,7 +66,7 @@ func (a *ArrayList[T]) Shrink() {
 
 func (a *ArrayList[T]) Set(index int, t T) error {
 	if index < 0 || index >= len(a.values) {
-		return gotools.ErrIndexOutOfRange
+		return gotools.NewErrIndexOutOfRange(len(a.values), index)
 	}
 	a.values[index] = t
 	return nil
