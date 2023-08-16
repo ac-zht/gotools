@@ -1,4 +1,4 @@
-module gotools
+module github.com/zht-account/gotools
 
 go 1.18
 
