@@ -1,7 +1,7 @@
 package list
 
 import (
-	"gotools"
+	"github.com/zht-account/gotools"
 )
 
 type node[T any] struct {
