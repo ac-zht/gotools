@@ -2,7 +2,7 @@ package slice
 
 import (
 	"github.com/stretchr/testify/assert"
-	"gotools"
+	"github.com/zht-account/gotools"
 	"testing"
 )
 

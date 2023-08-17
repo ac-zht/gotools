@@ -1,7 +1,7 @@
 package slice
 
 import (
-	"gotools/random"
+	"github.com/zht-account/gotools/random"
 	"math/rand"
 	"reflect"
 	"time"
@@ -23,4 +23,4 @@ func Shuffle[T any](src []T) {
 		j = random.RandInt(0, len(src)-1)
 		srcSwap(i, j)
 	}
-}
+}``
