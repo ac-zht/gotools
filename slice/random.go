@@ -1,8 +1,8 @@
 package slice
 
 import (
-	"gotools"
-	"gotools/random"
+	"github.com/zht-account/gotools"
+	"github.com/zht-account/gotools/random"
 )
 
 // RandomIndexes 随机得到切片中指定数量的下标集

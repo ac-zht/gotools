@@ -1,6 +1,6 @@
 package slice
 
-import "gotools"
+import "github.com/zht-account/gotools"
 
 // Delete 根据下标删除切片中元素
 func Delete[T any](index int, s []T) (res []T, t T, err error) {
