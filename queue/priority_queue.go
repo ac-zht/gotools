@@ -75,6 +75,10 @@ func (p *priorityQueue[T]) isEmpty() bool {
 	return len(p.data) < 2
 }
 
+func (p *priorityQueue[T]) Len() int {
+	return len(p.data) - 1
+}
+
 func NewPriorityQueue[T any](capacity int, compare Comparer[T]) *priorityQueue[T] {
 	sliceCap := capacity + 1
 	if capacity <= 0 {
