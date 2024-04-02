@@ -60,7 +60,7 @@ func (p *priorityQueue[T]) Dequeue() (val T, err error) {
 	return val, nil
 }
 
-func (p *priorityQueue[T]) peek() (val T, err error) {
+func (p *priorityQueue[T]) Peek() (val T, err error) {
 	if p.isEmpty() {
 		return p.zero, ErrEmptyQueue
 	}
