@@ -94,7 +94,7 @@ func (d *delayQueue[T]) Dequeue(ctx context.Context) (T, error) {
 		default:
 		}
 
-		top, err := d.p.peek()
+		top, err := d.p.Peek()
 		switch err {
 		case nil:
 			delay := top.Delay()
