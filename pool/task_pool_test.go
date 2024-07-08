@@ -3,7 +3,7 @@ package pool
 import (
 	"context"
 	"errors"
-	"geektime_work/option"
+	"github.com/ac-zht/gotools/option"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/sync/errgroup"
 	"sync"

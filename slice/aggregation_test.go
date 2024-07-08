@@ -1,8 +1,8 @@
 package slice
 
 import (
+	"github.com/ac-zht/gotools"
 	"github.com/stretchr/testify/assert"
-	"github.com/zht-account/gotools"
 	"testing"
 )
 

@@ -1,6 +1,6 @@
 package slice
 
-import "github.com/zht-account/gotools"
+import "github.com/ac-zht/gotools"
 
 // Max 切片中最大值
 func Max[T gotools.RealNumber](src []T) T {

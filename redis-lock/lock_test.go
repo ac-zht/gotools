@@ -3,11 +3,11 @@ package rlock
 import (
 	"context"
 	"errors"
+	"github.com/ac-zht/gotools/redis-lock/mocks"
 	"github.com/go-redis/redis/v9"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"gpkg/redis-lock/mocks"
 	"testing"
 	"time"
 )

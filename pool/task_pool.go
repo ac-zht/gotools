@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"geektime_work/option"
+	"github.com/ac-zht/gotools/option"
 	"runtime"
 	"sync"
 	"sync/atomic"
@@ -219,7 +219,8 @@ func (o *OnDemandBlockTaskPool) trySubmit(ctx context.Context, task Task, state 
 	return false, nil
 }
 
-/**
+/*
+*
 工作线程
 */
 func (o *OnDemandBlockTaskPool) numOfGo() int32 {
@@ -247,7 +248,8 @@ func (o *OnDemandBlockTaskPool) decreaseTotalGo(n int32) {
 	o.totalGo -= n
 }
 
-/**
+/*
+*
 处理任务
 */
 func (o *OnDemandBlockTaskPool) goroutine(id int32) {

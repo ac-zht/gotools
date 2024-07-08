@@ -1,8 +1,8 @@
 package list
 
 import (
-	"github.com/zht-account/gotools"
-	"github.com/zht-account/gotools/slice"
+	"github.com/ac-zht/gotools"
+	"github.com/ac-zht/gotools/slice"
 )
 
 type ArrayList[T any] struct {
